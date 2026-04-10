@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sandhya & Prem Chand — 25th Anniversary</title>
+  <meta name="description" content="Silver Jubilee Anniversary Dinner — 8th May 2026">
+  <meta name="theme-color" content="#4A1018">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --gold: #D4AF36;
+      --gold-light: #E0C35A;
+      --gold-dark: #B8962E;
+      --maroon: #7A1E2B;
+      --maroon-deep: #4A1018;
+      --cream: #F5ECD7;
+      --dark: #2C3347;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; }
+    body {
+      font-family: 'Della Robbia', Georgia, serif;
+      background: var(--maroon-deep);
+      color: var(--dark);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      height: 100%;
+    }
+    .snap-section { scroll-snap-align: start; min-height: 100vh; min-height: 100dvh; }
+
+    /* ========== LOADER ========== */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--maroon-deep);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+    #loader .ganesha {
+      width: 110px; height: auto; opacity: 0;
+      filter: drop-shadow(0 0 30px rgba(212,175,54,0.3));
+    }
+    #loader .loader-names {
+      margin-top: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-style: italic;
+      color: var(--gold); opacity: 0; letter-spacing: 1px;
+    }
+    #loader .loader-bar {
+      margin-top: 28px; width: 80px; height: 1px;
+      background: rgba(212,175,54,0.15);
+      position: relative; overflow: hidden;
+    }
+    #loader .loader-bar::after {
+      content: ''; position: absolute; left: -100%; top: 0;
+      width: 100%; height: 100%; background: var(--gold);
+      animation: loadBar 2.2s ease-in-out forwards;
+    }
+    @keyframes loadBar { to { left: 0; } }
+
+    /* ==============================================
+       HERO — Exact positions from Canva page 2
+       Canvas: 397w × 559h pt
+       All positions as % of canvas dimensions
+       ============================================== */
+    .hero-wrap {
+      min-height: 100vh; min-height: 100dvh;
+      background: var(--maroon-deep);
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      scroll-snap-align: start;
+    }
+    .hero {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 397 / 559;
+      overflow: hidden;
+      background: var(--gold);
+    }
+
+    /* z1: Floral motif pattern — 3×3 tiled, each tile ~182×220pt = 45.8% × 39.4% */
+    .hero-bg-motif {
+      position: absolute; inset: 0;
+      background-image: url('assets/individual/01-floral-motif-pattern.png');
+      background-size: 45.8% auto;
+      background-repeat: repeat;
+      background-position: -18.8% -9.1%; /* offset to match Canva tile start at -74.5,-50.9 */
+      opacity: 0.25;
+      z-index: 1;
+    }
+
+    /* Bottom fade to maroon */
+    .hero::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 8%;
+      background: linear-gradient(to bottom, transparent, var(--maroon-deep));
+      z-index: 60; pointer-events: none;
+    }
+
+    /* Shared base for all positioned assets */
+    .ha { position: absolute; pointer-events: none; }
+    .ha img, .ha video { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+    /* --- z2-3: Gazebos --- */
+    /* left: -37/397=-9.32%, top: 316/559=56.53%, w: 76.65/397=19.31%, h: 121.91/559=21.81% */
+    .gz-l { left:-9.32%; top:56.53%; width:19.31%; height:21.81%; z-index:2; }
+    /* right: 350.78/397=88.36% */
+    .gz-r { left:88.36%; top:56.53%; width:19.31%; height:21.81%; z-index:3; transform:scaleX(-1); }
+
+    /* --- z4: Green watercolor bg --- */
+    /* left: -37/397=-9.32%, top: 456.65/559=81.69%, w: 489.3/397=123.25%, h: 144.5/559=25.85% */
+    .grn-bg { left:-9.32%; top:81.69%; width:123.25%; height:25.85%; z-index:4; }
+    .grn-bg img { object-fit: cover; }
+
+    /* --- z5: Floor grid --- */
+    /* left: -39.7/397=-10%, top: 456.65/559=81.69%, w: 476.5/397=120.03%, h: 237.1/559=42.41% */
+    .floor { left:-10%; top:81.69%; width:120.03%; height:42.41%; z-index:5; opacity:0.4; }
+    .floor img { object-fit: cover; }
+
+    /* --- z6-8: Stone railing (3 tiled pieces) --- */
+    /* top: 419.55/559=75.05%, h: 37.1/559=6.64%, w: 158.74/397=39.98% */
+    .rail { top:75.05%; height:6.64%; width:39.98%; z-index:6; }
+    .rail img { object-fit: fill; }
+    .rail-1 { left:-3.96%; }   /* -15.73/397 */
+    .rail-2 { left:33.04%; }   /* 131.18/397 */
+    .rail-3 { left:70.04%; }   /* 278.09/397 */
+
+    /* --- z9: RIGHT dancer (BEHIND arch!) --- */
+    /* left: 241.79/397=60.90%, top: 85.51/559=15.30%, w: 195.04/397=49.13%, h: 456.24/559=81.62% */
+    .dn-r { left:60.90%; top:15.30%; width:49.13%; height:81.62%; z-index:18; }
+
+    /* --- z10: Floral arch --- #7A1E2B (hsl 351°,61%,30%) via color overlay */
+    /* left: -15.73/397=-3.96%, top: -14.29/559=-2.56%, w: 428.32/397=107.89%, h: 231.83/559=41.47% */
+    .arch { left:-3.96%; top:-2.56%; width:107.89%; height:41.47%; z-index:10; }
+
+    /* --- z11-12: Outer garlands --- */
+    /* w: 18.17/397=4.58%, h: 108.47/559=19.40% */
+    .grl { width:4.58%; height:19.40%; }
+    /* outer left: left:14.71/397=3.70%, top:176.64/559=31.60% */
+    .grl-ol { left:3.70%; top:31.60%; z-index:11; }
+    /* outer right: left:363.97/397=91.68% */
+    .grl-or { left:91.68%; top:31.60%; z-index:12; transform:scaleX(-1); }
+
+    /* --- z13: Peacock spread (left only) --- */
+    /* left: 16.66/397=4.20%, top: 407.49/559=72.90%, w: 31.18/397=7.85%, h: 33.43/559=5.98% */
+    .pk-sp { left:4.20%; top:72.90%; width:7.85%; height:5.98%; z-index:13; }
+
+    /* --- z14,16: Hanging vines --- */
+    /* w: 46.51/397=11.71%, h: 87.13/559=15.59% */
+    .vine { width:11.71%; height:15.59%; }
+    /* left vine: left:-23.25/397=-5.86%, top:328.88/559=58.83% */
+    .vine-l { left:-5.86%; top:58.83%; z-index:14; }
+    /* right vine: left:373.37/397=94.05%, top:333.58/559=59.67% */
+    .vine-r { left:94.05%; top:59.67%; z-index:16; transform:scaleX(-1); }
+
+    /* --- z15,17: Peacock standing --- */
+    /* w: 28.52/397=7.18%, h: 28.95/559=5.18% */
+    .pk-st { width:7.18%; height:5.18%; }
+    /* left: 2.40/397=0.60%, top:326.76/559=58.45% */
+    .pk-st-l { left:0.60%; top:58.45%; z-index:15; }
+    /* right: 359.82/397=90.63% */
+    .pk-st-r { left:90.63%; top:58.45%; z-index:17; transform:scaleX(-1); }
+
+    /* --- z18: LEFT dancer (IN FRONT of arch!) --- */
+    /* left: -23.98/397=-6.04%, top: 85.51/559=15.30%, w: 190.84/397=48.07%, h: 446.41/559=79.86% */
+    .dn-l { left:-6.04%; top:15.30%; width:48.07%; height:79.86%; z-index:18; transform:scaleX(-1); }
+
+    /* --- z19: Fountain --- */
+    /* left: 55.82/397=14.06%, top: 483.32/559=86.46%, w: 115.38/397=29.07%, h: 86.68/559=15.51% */
+    .ftn { left:14.06%; top:86.46%; width:29.07%; height:15.51%; z-index:19; }
+
+    /* --- z20-21: Floral pots --- */
+    /* w: 89.95/397=22.66%, h: 162.08/559=29.00% */
+    .pot { width:22.66%; height:29.00%; }
+    /* left: -34.13/397=-8.60%, top: 413.11/559=73.90% */
+    .pot-l { left:-8.60%; top:73.90%; z-index:20; }
+    /* right: 337.48/397=85.01% */
+    .pot-r { left:85.01%; top:73.90%; z-index:21; transform:scaleX(-1); }
+
+    /* --- z22-23: Pink flowers (center bottom) --- */
+    /* w: 84.04/397=21.17%, h: 117.95/559=21.10% */
+    .pfl { width:21.17%; height:21.10%; }
+    /* instance 1: left:187.10/397=47.13%, top:485.47/559=86.85% */
+    .pfl-1 { left:47.13%; top:86.85%; z-index:22; }
+    /* instance 2: left:227.85/397=57.39%, top:490.21/559=87.69% */
+    .pfl-2 { left:57.39%; top:87.69%; z-index:23; }
+
+    /* --- z24: Green leaves (right bottom) --- */
+    /* left: 281.01/397=70.79%, top: 494.15/559=88.40%, w: 93.07/397=23.44%, h: 148.88/559=26.63% */
+    .glv { left:70.79%; top:88.40%; width:23.44%; height:26.63%; z-index:24; }
+
+    /* --- z25: Gold leaf bouquet 1 (center-left) --- */
+    /* w: 94.16/397=23.72%, h: 135.24/559=24.19% */
+    .glf { width:23.72%; height:24.19%; }
+    /* left: 132.29/397=33.32%, top: 502.38/559=89.87% */
+    .glf-1 { left:33.32%; top:89.87%; z-index:25; }
+
+    /* --- z26: Pink flowers 3 (far left bottom) --- */
+    /* left: 25.19/397=6.34%, top: 514.47/559=92.03% */
+    .pfl-3 { left:6.34%; top:92.03%; z-index:26; }
+
+    /* --- z27: Gold leaf bouquet 2 (right) --- */
+    /* left: 266.52/397=67.13%, top: 489.73/559=87.61% */
+    .glf-2 { left:67.13%; top:87.61%; z-index:27; }
+
+    /* --- z28: Banana leaf (left bottom) --- */
+    /* left: 23.25/397=5.86%, top: 513.81/559=91.91%, w: 133.90/397=33.73%, h: 174.65/559=31.24% */
+    .bnl { left:5.86%; top:91.91%; width:33.73%; height:31.24%; z-index:28; }
+
+    /* --- z29: Heart divider --- */
+    /* left: 169.86/397=42.79%, top: 304.69/559=54.51%, w: 57.13/397=14.39%, h: 12.14/559=2.17% */
+    .hrt { left:42.79%; top:54.51%; width:14.39%; height:2.17%; z-index:29; }
+
+    /* --- z30-31: Inner garlands (higher up, above couple) --- */
+    /* top: 117.07/559=20.94% */
+    .grl-il { left:12.36%; top:20.94%; z-index:30; }  /* 49.06/397=12.36% */
+    .grl-ir { left:83.02%; top:20.94%; z-index:31; transform:scaleX(-1); }  /* 329.62/397=83.02% */
+
+    /* --- z32: COUPLE — TOPMOST LAYER --- */
+    /* left: 93.46/397=23.54%, top: 167.49/559=29.96%, w: 210.40/397=52.99%, h: 377.12/559=67.46% */
+    .couple { left:23.54%; top:29.96%; width:52.99%; height:67.46%; z-index:19; position:relative; }
+    .couple-img { display:none !important; }
+    .couple-vid { display:none !important; }
+    .couple-canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
+
+    /* --- z35: Text overlay --- */
+    .hero-text {
+      position: absolute; z-index:35; text-align:center; pointer-events:none;
+      left:50%; top:16%; width:50%; transform:translateX(-50%);
+    }
+    .hero-text .t25 {
+      font-family:'Prata',serif; font-weight:700;
+      font-size:clamp(1.6rem,7.5vw,3rem);
+      color:var(--dark); line-height:1;
+    }
+    .hero-text .tof {
+      font-family:'Prata',serif; font-style:italic;
+      font-size:clamp(0.8rem,3vw,1.2rem);
+      color:var(--dark); margin:8px 0;
+    }
+    .hero-text .tlove {
+      font-family:'Prata',serif; font-weight:700; font-style:italic;
+      font-size:clamp(1.8rem,7.5vw,3rem);
+      color:var(--dark); line-height:1;
+    }
+
+    /* Scroll arrow */
+    .scroll-arrow {
+      position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+      text-align:center; z-index:55; opacity:0;
+    }
+    .scroll-arrow span { display:block; font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--dark); }
+    .scroll-arrow .chevron {
+      display:block; width:14px; height:14px; margin:5px auto 0;
+      border-right:1.5px solid var(--dark); border-bottom:1.5px solid var(--dark);
+      transform:rotate(45deg); animation:pulse-arrow 2s infinite;
+    }
+    @keyframes pulse-arrow {
+      0%,100% { transform:rotate(45deg) translateY(0); opacity:1; }
+      50% { transform:rotate(45deg) translateY(5px); opacity:0.4; }
+    }
+
+    /* ========== HERO BOTTOM (Names Section) ========== */
+    .hero-bottom {
+      background: var(--maroon-deep);
+      padding: 20px 24px 30px;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+    }
+    .hero-bottom-names {
+      font-family: 'Prata', serif;
+      font-size: clamp(1.6rem, 6.5vw, 2.4rem);
+      color: var(--gold);
+      letter-spacing: 1px;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    .hero-bottom-sub {
+      font-family: 'Della Robbia', Georgia, serif;
+      font-size: clamp(0.9rem, 3.5vw, 1.15rem);
+      color: var(--gold-dark);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      line-height: 1.8;
+      opacity: 0.85;
+    }
+    .scroll-arrow-bottom {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      opacity: 0.6;
+    }
+
+    /* ========== RSVP FLOAT ========== */
+    .rsvp-float { position:fixed; bottom:20px; right:20px; z-index:1000; opacity:0; pointer-events:none; }
+    .rsvp-float a {
+      display:flex; align-items:center; gap:8px; background:var(--maroon); color:var(--cream);
+      padding:12px 22px; border-radius:50px; text-decoration:none;
+      font-family:'Della Robbia',Georgia,serif; font-size:0.95rem; font-weight:600;
+      box-shadow:0 4px 20px rgba(0,0,0,0.3); border:1px solid rgba(212,175,54,0.3); transition:transform 0.3s;
+    }
+    .rsvp-float a:hover { transform:scale(1.05); }
+    .rsvp-float svg { width:18px; height:18px; fill:#25D366; }
+
+    /* ========== DETAILS ========== */
+    .details { background:var(--maroon-deep); padding:60px 24px 70px; position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; }
+    .details::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .details h2 { font-family:'Prata',serif; font-size:1.6rem; color:var(--cream); text-align:center; margin-bottom:40px; opacity:0; }
+    .detail-card { width:100%; max-width:340px; margin:0 auto 28px; display:flex; align-items:center; gap:16px; opacity:0; transform:translateY(25px); }
+    .detail-icon { width:42px; height:42px; border:1px solid var(--gold-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .detail-icon svg { width:18px; height:18px; fill:var(--gold); }
+    .detail-info { text-align:left; }
+    .detail-info .lbl { font-size:0.65rem; color:var(--gold-dark); letter-spacing:4px; text-transform:uppercase; }
+    .detail-info .val { font-family:'Prata',serif; font-size:1.1rem; color:var(--cream); line-height:1.4; margin-top:2px; }
+
+    /* ========== MAP ========== */
+    .map-section { background:var(--gold); padding:60px 24px; position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; }
+    .map-section h2 { font-family:'Prata',serif; font-size:1.5rem; color:var(--maroon-deep); text-align:center; opacity:0; }
+    .map-sub { font-size:0.9rem; color:var(--dark); text-align:center; margin:6px 0 24px; opacity:0; }
+    .map-wrap { max-width:400px; margin:0 auto; border-radius:10px; overflow:hidden; border:2px solid var(--maroon); box-shadow:0 10px 40px rgba(74,16,24,0.2); opacity:0; transform:translateY(30px); }
+    .map-wrap iframe { width:100%; height:280px; border:none; display:block; filter:sepia(15%) saturate(85%); }
+    .map-link { display:block; text-align:center; margin-top:16px; color:var(--maroon); font-weight:600; text-decoration:none; font-size:0.9rem; opacity:0; }
+    .map-link:hover { text-decoration:underline; }
+
+    /* ========== RSVP ========== */
+    .rsvp { background:var(--maroon-deep); padding:70px 24px 80px; text-align:center; position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; scroll-snap-align:start; }
+    .rsvp::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .rsvp h2 { font-family:'Prata',serif; font-size:1.6rem; color:var(--cream); opacity:0; }
+    .rsvp p { font-size:1rem; color:var(--gold-light); margin:12px auto 36px; max-width:300px; opacity:0; }
+    .rsvp-btn {
+      display:inline-flex; align-items:center; gap:10px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--maroon-deep);
+      padding:16px 40px; border-radius:50px; text-decoration:none;
+      font-family:'Prata',serif; font-size:1.15rem; font-weight:700;
+      box-shadow:0 6px 24px rgba(212,175,54,0.4); transition:transform 0.3s; opacity:0; transform:scale(0.85);
+    }
+    .rsvp-btn:hover { transform:scale(1.06) !important; }
+    .rsvp-btn svg { width:24px; height:24px; fill:#25D366; }
+
+    /* Add to Calendar */
+    .cal-wrap { position:relative; text-align:center; margin:20px 0 8px; }
+    .cal-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      background:transparent; border:1.5px solid var(--gold);
+      color:var(--gold); font-family:'Della Robbia',Georgia,serif;
+      font-size:1rem; padding:10px 24px; border-radius:8px;
+      cursor:pointer; letter-spacing:1px; transition:all 0.3s;
+    }
+    .cal-btn:hover { background:rgba(212,175,54,0.1); }
+    .cal-dropdown {
+      display:none; position:absolute; left:50%; transform:translateX(-50%);
+      top:calc(100% + 8px); background:var(--maroon-deep);
+      border:1px solid rgba(212,175,54,0.3); border-radius:8px;
+      overflow:hidden; min-width:200px; z-index:10;
+      box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    }
+    .cal-dropdown.open { display:block; }
+    .cal-dropdown a {
+      display:flex; align-items:center; gap:10px;
+      padding:12px 16px; color:var(--gold-light);
+      text-decoration:none; font-size:0.9rem;
+      transition:background 0.2s; border-bottom:1px solid rgba(212,175,54,0.1);
+    }
+    .cal-dropdown a:last-child { border-bottom:none; }
+    .cal-dropdown a:hover { background:rgba(212,175,54,0.08); }
+
+    footer { background:var(--maroon-deep); padding:20px; text-align:center; border-top:1px solid rgba(212,175,54,0.15); }
+    footer p { font-size:0.75rem; color:var(--gold-dark); letter-spacing:2px; }
+    footer .credit { font-size:0.6rem; color:rgba(212,175,54,0.3); letter-spacing:1.5px; margin-top:6px; }
+
+    /* ===== SUBTLE ANIMATIONS ===== */
+
+    /* Flower/foliage sway */
+    @keyframes sway-slow {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2.5deg); }
+    }
+    @keyframes sway-slow-r {
+      0%, 100% { transform: rotate(0deg) scaleX(-1); }
+      50% { transform: rotate(-2.5deg) scaleX(-1); }
+    }
+    @keyframes sway-med {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes sway-med-r {
+      0%, 100% { transform: rotate(0deg) scaleX(-1); }
+      50% { transform: rotate(-3deg) scaleX(-1); }
+    }
+
+    /* Flowers sway from their bottom center */
+    .pot-l, .pot-r, .pfl-1, .pfl-2, .pfl-3, .glf-1, .glf-2, .glv, .bnl { transform-origin: bottom center; }
+    .pot-l  { animation: sway-slow 5s ease-in-out infinite; }
+    .pot-r  { animation: sway-slow-r 5.5s ease-in-out infinite 0.3s; }
+    .pfl-1  { animation: sway-med 4s ease-in-out infinite 0.5s; }
+    .pfl-2  { animation: sway-med 4.3s ease-in-out infinite 1s; }
+    .pfl-3  { animation: sway-slow 5.2s ease-in-out infinite 0.7s; }
+    .glf-1  { animation: sway-med 4.8s ease-in-out infinite 0.2s; }
+    .glf-2  { animation: sway-med 4.5s ease-in-out infinite 1.2s; }
+    .glv    { animation: sway-slow 6s ease-in-out infinite 0.4s; }
+    .bnl    { animation: sway-slow 5.8s ease-in-out infinite 0.8s; }
+
+    /* Vine sway from top */
+    .vine-l, .vine-r { transform-origin: top center; }
+    .vine-l { animation: sway-med 5s ease-in-out infinite 0.6s; }
+    .vine-r { animation: sway-med-r 5.3s ease-in-out infinite; }
+
+    /* Garland gentle sway from top */
+    .grl { transform-origin: top center; }
+    .grl-ol, .grl-il { animation: sway-slow 6s ease-in-out infinite 0.3s; }
+    .grl-or { animation: sway-slow-r 6.2s ease-in-out infinite 0.8s; }
+    .grl-ir { animation: sway-slow-r 5.8s ease-in-out infinite; }
+
+    /* Couple gentle float (breathing) */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .couple { animation: float 4s ease-in-out infinite; }
+
+    /* Peacock subtle bob */
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes bob-r {
+      0%, 100% { transform: translateY(0) scaleX(-1); }
+      50% { transform: translateY(-2px) scaleX(-1); }
+    }
+    .pk-st-l { animation: bob 3s ease-in-out infinite 0.5s; }
+    .pk-st-r { animation: bob-r 3.2s ease-in-out infinite; }
+    .pk-sp   { animation: bob 3.5s ease-in-out infinite 0.2s; }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <img class="ganesha" src="assets/individual/18-ganesha-lg.png" alt="Ganesha">
+  <div class="loader-names">Sandhya & Prem Chand</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" loop preload="auto" src="assets/bg-music.mp3"></audio>
+
+<!-- MUSIC TOGGLE -->
+<button id="musicToggle" aria-label="Toggle music" style="
+  position:fixed; top:16px; right:16px; z-index:9999;
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(122,30,43,0.85); border:1.5px solid var(--gold);
+  backdrop-filter:blur(8px); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,0.3); transition:transform 0.2s;
+">
+  <svg id="musicIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#D4AF36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- speaker icon -->
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+    <path id="soundWave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    <path id="soundWave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    <!-- mute line (hidden by default) -->
+    <line id="muteLine" x1="2" y1="2" x2="22" y2="22" style="display:none" stroke="#D4AF36" stroke-width="2.5"/>
+  </svg>
+</button>
+
+<!-- RSVP FLOAT -->
+<div class="rsvp-float" id="rsvpFloat">
+  <a href="https://wa.me/919570174957?text=Namaste%20%F0%9F%99%8F%20Hum%20Sandhya%20ji%20aur%20Prem%20Chand%20ji%20ke%2025th%20Anniversary%20dinner%20mein%20zaroor%20aayenge!%20%F0%9F%8E%89%208%20May%2C%207PM" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    RSVP
+  </a>
+</div>
+
+<!-- ===== HERO — Exact Canva page 2 layout ===== -->
+<div class="hero-wrap">
+<section class="hero" id="hero">
+  <!-- z1: Motif pattern background -->
+  <div class="hero-bg-motif"></div>
+
+  <!-- z2-3: Gazebos -->
+  <div class="ha gz-l"><img src="assets/individual/02-gazebo-watercolor.png" alt=""></div>
+  <div class="ha gz-r"><img src="assets/individual/02-gazebo-watercolor.png" alt=""></div>
+
+  <!-- z4: Green watercolor bg -->
+  <div class="ha grn-bg"><img src="assets/individual/03-green-watercolor-bg.png" alt=""></div>
+
+  <!-- z5: Floor grid -->
+  <div class="ha floor"><img src="assets/individual/04-perspective-grid-floor.png" alt=""></div>
+
+  <!-- z6-8: Stone railing (3 tiled) -->
+  <div class="ha rail rail-1"><img src="assets/individual/05-stone-railing.png" alt=""></div>
+  <div class="ha rail rail-2"><img src="assets/individual/05-stone-railing.png" alt=""></div>
+  <div class="ha rail rail-3"><img src="assets/individual/05-stone-railing.png" alt=""></div>
+
+  <!-- z9: RIGHT dancer (BEHIND arch) -->
+  <div class="ha dn-r"><img src="assets/individual/06-dancer-lg.png" alt=""></div>
+
+  <!-- z10: Floral arch -->
+  <div class="ha arch"><img src="assets/individual/07-arch-maroon.png" alt=""></div>
+
+  <!-- z11-12: Outer garlands -->
+  <div class="ha grl grl-ol"><img src="assets/individual/08-garland-lg.png" alt=""></div>
+  <div class="ha grl grl-or"><img src="assets/individual/08-garland-lg.png" alt=""></div>
+
+  <!-- z13: Peacock spread (left only) -->
+  <div class="ha pk-sp"><img src="assets/individual/09-peacock-lg.png" alt=""></div>
+
+  <!-- z14: Vine left -->
+  <div class="ha vine vine-l"><img src="assets/individual/10-hanging-vine-plant.png" alt=""></div>
+
+  <!-- z15: Peacock standing left -->
+  <div class="ha pk-st pk-st-l"><img src="assets/individual/11-peacock-standing.png" alt=""></div>
+
+  <!-- z16: Vine right -->
+  <div class="ha vine vine-r"><img src="assets/individual/10-hanging-vine-plant.png" alt=""></div>
+
+  <!-- z17: Peacock standing right -->
+  <div class="ha pk-st pk-st-r"><img src="assets/individual/11-peacock-standing.png" alt=""></div>
+
+  <!-- z18: LEFT dancer (IN FRONT of arch) -->
+  <div class="ha dn-l"><img src="assets/individual/06-dancer-lg.png" alt=""></div>
+
+  <!-- z19: Fountain -->
+  <div class="ha ftn"><img src="assets/individual/12-fountain-lg.png" alt=""></div>
+
+  <!-- z20-21: Floral pots -->
+  <div class="ha pot pot-l"><img src="assets/individual/13-pot-lg.png" alt=""></div>
+  <div class="ha pot pot-r"><img src="assets/individual/13-pot-lg.png" alt=""></div>
+
+  <!-- z22-23: Pink flowers (center bottom) -->
+  <div class="ha pfl pfl-1"><img src="assets/individual/16-flowers-lg.png" alt=""></div>
+  <div class="ha pfl pfl-2"><img src="assets/individual/16-flowers-lg.png" alt=""></div>
+
+  <!-- z24: Green leaves (right bottom) -->
+  <div class="ha glv"><img src="assets/individual/17-green-leaves.png" alt=""></div>
+
+  <!-- z25: Gold leaf bouquet 1 -->
+  <div class="ha glf glf-1"><img src="assets/individual/15-gold-leaf-bouquet.png" alt=""></div>
+
+  <!-- z26: Pink flowers 3 (far left) -->
+  <div class="ha pfl pfl-3"><img src="assets/individual/16-flowers-lg.png" alt=""></div>
+
+  <!-- z27: Gold leaf bouquet 2 -->
+  <div class="ha glf glf-2"><img src="assets/individual/15-gold-leaf-bouquet.png" alt=""></div>
+
+  <!-- z28: Banana leaf -->
+  <div class="ha bnl"><img src="assets/individual/14-banana-leaf.png" alt=""></div>
+
+  <!-- heart divider removed -->
+
+  <!-- z30-31: Inner garlands -->
+  <div class="ha grl grl-il"><img src="assets/individual/08-garland-lg.png" alt=""></div>
+  <div class="ha grl grl-ir"><img src="assets/individual/08-garland-lg.png" alt=""></div>
+
+  <!-- z32: COUPLE (topmost) -->
+  <div class="ha couple">
+      <img src="assets/individual/20-couple-hires.png" alt="Sandhya & Prem Chand" class="couple-img">
+      <video id="coupleVid" src="assets/individual/couple-video.mp4" autoplay muted loop playsinline class="couple-vid"></video>
+      <canvas id="coupleCanvas" class="couple-canvas"></canvas>
+    </div>
+
+  <!-- z35: Text -->
+  <div class="hero-text">
+    <div class="t25">25 Years</div>
+    <div class="tof">of</div>
+    <div class="tlove">Love</div>
+  </div>
+
+  <div class="scroll-arrow" id="scrollArrow">
+    <span class="chevron"></span>
+  </div>
+</section>
+
+<!-- HERO BOTTOM — Names & Subtitle -->
+<div class="hero-bottom">
+  <div class="hero-bottom-names">Sandhya & Prem Chand</div>
+  <div class="hero-bottom-sub">Silver Jubilee Anniversary<br>Dinner Celebration</div>
+  <div class="scroll-arrow scroll-arrow-bottom" id="scrollArrow2">
+    <span class="chevron"></span>
+  </div>
+</div>
+</div>
+
+<!-- DETAILS -->
+<section class="details" id="details">
+  <h2>Event Details</h2>
+  <div class="detail-card">
+    <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg></div>
+    <div class="detail-info"><div class="lbl">Date</div><div class="val">Friday, 8th May 2026</div></div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></div>
+    <div class="detail-info"><div class="lbl">Time</div><div class="val">7:00 PM Onwards</div></div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+    <div class="detail-info"><div class="lbl">Venue</div><div class="val">Hotel Dayal International<br>112, SNP Area, Aambagan, Sakchi</div></div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+    <div class="detail-info"><div class="lbl">Dress Code</div><div class="val">Traditional / Festive Attire</div></div>
+  </div>
+
+  <!-- Add to Calendar -->
+  <div class="cal-wrap">
+    <button class="cal-btn" id="calBtn">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM12 13h5v5h-5z" fill="#D4AF36"/></svg>
+      Add to Calendar
+    </button>
+    <div class="cal-dropdown" id="calDropdown">
+      <a id="calGoogle" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#4285F4"/></svg>
+        Google Calendar
+      </a>
+      <a id="calIcs" href="#" download="anniversary-invitation.ics">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="#D4AF36"/></svg>
+        Download .ics
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="map-section" id="mapSection">
+  <h2>Find the Venue</h2>
+  <p class="map-sub">Hotel Dayal International, Sakchi</p>
+  <div class="map-wrap" id="mapWrap">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.234!2d86.2025!3d22.8003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f5e31c5fbe006b%3A0x1e7e7c1d3d7e8b8a!2sHotel%20Dayal%20International!5e0!3m2!1sen!2sin!4v1700000000000" allowfullscreen loading="lazy" title="Venue Map"></iframe>
+  </div>
+  <a class="map-link" href="https://www.google.com/maps/search/Hotel+Dayal+International+Sakchi+Jamshedpur" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>
+</section>
+
+<!-- RSVP -->
+<section class="rsvp" id="rsvpSection">
+  <h2>We Would Love Your Presence</h2>
+  <p>Kindly confirm your attendance so we can make this evening truly special</p>
+  <a class="rsvp-btn" href="https://wa.me/919570174957?text=Namaste%20%F0%9F%99%8F%20Hum%20Sandhya%20ji%20aur%20Prem%20Chand%20ji%20ke%2025th%20Anniversary%20dinner%20mein%20zaroor%20aayenge!%20%F0%9F%8E%89%208%20May%2C%207PM" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    RSVP on WhatsApp
+  </a>
+</section>
+
+<footer><p>With Love &mdash; The Family</p><p class="credit">Designed by Ayush Kumar</p></footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+var loaderTl = gsap.timeline();
+loaderTl
+  .to('#loader .ganesha', { opacity:1, duration:1, ease:'power2.out' }, 0.3)
+  .from('#loader .ganesha', { scale:0.75, duration:1, ease:'power2.out' }, 0.3)
+  .to('#loader .loader-names', { opacity:1, duration:0.8 }, 1);
+
+window.addEventListener('load', function() {
+  gsap.to('#loader', { opacity:0, delay:2.8, duration:0.8,
+    onComplete: function() { document.getElementById('loader').classList.add('hidden'); runAnimations(); }
+  });
+});
+setTimeout(function() {
+  if (!document.getElementById('loader').classList.contains('hidden')) {
+    gsap.to('#loader', { opacity:0, duration:0.8,
+      onComplete: function() { document.getElementById('loader').classList.add('hidden'); runAnimations(); }
+    });
+  }
+}, 4000);
+
+function runAnimations() {
+  gsap.to('#scrollArrow', { opacity:0.7, duration:0.6, delay:0.5 });
+  gsap.fromTo('.hero-bottom-names', {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, delay:0.6});
+  gsap.fromTo('.hero-bottom-sub', {opacity:0, y:20}, {opacity:0.85, y:0, duration:0.7, delay:0.9});
+  ScrollTrigger.create({
+    trigger:'#details', start:'top 80%',
+    onEnter: function(){ gsap.to('#rsvpFloat',{opacity:1,pointerEvents:'auto',duration:0.4}); },
+    onLeaveBack: function(){ gsap.to('#rsvpFloat',{opacity:0,pointerEvents:'none',duration:0.3}); }
+  });
+  gsap.to('.details h2',{opacity:1,duration:0.7,scrollTrigger:{trigger:'#details',start:'top 75%'}});
+  gsap.utils.toArray('.detail-card').forEach(function(c,i){
+    gsap.to(c,{opacity:1,y:0,duration:0.6,delay:i*0.12,scrollTrigger:{trigger:c,start:'top 88%'}});
+  });
+  gsap.to('.map-section h2',{opacity:1,duration:0.7,scrollTrigger:{trigger:'#mapSection',start:'top 75%'}});
+  gsap.to('.map-sub',{opacity:1,duration:0.6,delay:0.15,scrollTrigger:{trigger:'#mapSection',start:'top 75%'}});
+  gsap.to('#mapWrap',{opacity:1,y:0,duration:0.8,scrollTrigger:{trigger:'#mapWrap',start:'top 88%'}});
+  gsap.to('.map-link',{opacity:1,duration:0.5,delay:0.3,scrollTrigger:{trigger:'#mapWrap',start:'top 88%'}});
+  gsap.to('.rsvp h2',{opacity:1,duration:0.7,scrollTrigger:{trigger:'#rsvpSection',start:'top 75%'}});
+  gsap.to('.rsvp p',{opacity:1,duration:0.6,delay:0.15,scrollTrigger:{trigger:'#rsvpSection',start:'top 75%'}});
+  gsap.to('.rsvp-btn',{opacity:1,scale:1,duration:0.7,delay:0.3,ease:'back.out(1.5)',scrollTrigger:{trigger:'#rsvpSection',start:'top 75%'}});
+}
+
+/* ===== MUSIC + HAPTICS ===== */
+var music = document.getElementById('bgMusic');
+var musicBtn = document.getElementById('musicToggle');
+var wave1 = document.getElementById('soundWave1');
+var wave2 = document.getElementById('soundWave2');
+var muteLine = document.getElementById('muteLine');
+var musicPlaying = false;
+
+function haptic(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+function setMusicIcon(playing) {
+  wave1.style.display = playing ? '' : 'none';
+  wave2.style.display = playing ? '' : 'none';
+  muteLine.style.display = playing ? 'none' : '';
+}
+
+function startMusic() {
+  music.volume = 0;
+  music.play().then(function() {
+    musicPlaying = true;
+    setMusicIcon(true);
+    // Fade in over 1.5s
+    gsap.to(music, { volume: 0.6, duration: 1.5, ease: 'power2.out' });
+    haptic(50); // gentle tap on start
+  }).catch(function() {});
+}
+
+function stopMusic() {
+  gsap.to(music, { volume: 0, duration: 0.5, onComplete: function() {
+    music.pause();
+    musicPlaying = false;
+    setMusicIcon(false);
+  }});
+  haptic(30);
+}
+
+musicBtn.addEventListener('click', function() {
+  if (musicPlaying) { stopMusic(); } else { startMusic(); }
+  haptic(20);
+});
+
+// Auto-start music after loader finishes (first user interaction unlocks audio)
+var autoStartTried = false;
+function tryAutoStartMusic() {
+  if (autoStartTried) return;
+  autoStartTried = true;
+  startMusic();
+}
+
+// Try to start after loader hides
+var origRunAnimations = runAnimations;
+runAnimations = function() {
+  origRunAnimations();
+  tryAutoStartMusic();
+};
+
+// Fallback: start on first touch/click if autoplay was blocked
+document.addEventListener('touchstart', function onTouch() {
+  if (!musicPlaying) startMusic();
+  document.removeEventListener('touchstart', onTouch);
+}, { once: true });
+document.addEventListener('click', function onClick() {
+  if (!musicPlaying) startMusic();
+  document.removeEventListener('click', onClick);
+}, { once: true });
+
+// Haptic on scroll milestones (once per section)
+var hapticSections = ['#details', '#mapSection', '#rsvpSection'];
+hapticSections.forEach(function(sel) {
+  ScrollTrigger.create({
+    trigger: sel, start: 'top 70%', once: true,
+    onEnter: function() { haptic([15, 30, 15]); } // double tap pattern
+  });
+});
+
+// Haptic on RSVP button
+document.querySelector('.rsvp-btn')?.addEventListener('click', function() {
+  haptic([30, 50, 30, 50, 30]); // celebration pattern
+});
+document.querySelector('#rsvpFloat a')?.addEventListener('click', function() {
+  haptic([30, 50, 30, 50, 30]);
+});
+
+// Set initial icon state (muted)
+setMusicIcon(false);
+
+/* ===== ADD TO CALENDAR ===== */
+(function() {
+  var title = 'Sandhya & Prem Chand - 25th Wedding Anniversary';
+  var location = 'Hotel Dayal International, 112, SNP Area, Aambagan, Sakchi, Jamshedpur';
+  var description = 'You are cordially invited to celebrate 25 years of togetherness of Sandhya & Prem Chand. Dress Code: Traditional / Festive Attire';
+  // May 8, 2026, 7:00 PM IST (UTC+5:30) = 1:30 PM UTC
+  var startUTC = '20260508T133000Z';
+  var endUTC   = '20260508T183000Z'; // ~5 hours event
+
+  // Google Calendar link
+  var gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(title)
+    + '&dates=' + startUTC + '/' + endUTC
+    + '&details=' + encodeURIComponent(description)
+    + '&location=' + encodeURIComponent(location);
+  document.getElementById('calGoogle').href = gcalUrl;
+
+  // ICS file blob
+  var icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Anniversary//EN',
+    'BEGIN:VEVENT',
+    'DTSTART:' + startUTC,
+    'DTEND:' + endUTC,
+    'SUMMARY:' + title,
+    'DESCRIPTION:' + description,
+    'LOCATION:' + location,
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  var blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  document.getElementById('calIcs').href = URL.createObjectURL(blob);
+
+  // Toggle dropdown
+  var btn = document.getElementById('calBtn');
+  var dropdown = document.getElementById('calDropdown');
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+    haptic(20);
+  });
+  document.addEventListener('click', function() {
+    dropdown.classList.remove('open');
+  });
+})();
+
+/* ===== COUPLE VIDEO CHROMAKEY ===== */
+(function() {
+  var vid = document.getElementById('coupleVid');
+  var canvas = document.getElementById('coupleCanvas');
+  var ctx = canvas.getContext('2d', { willReadFrequently: true });
+  var running = false;
+
+  // Load static image for legs compositing
+  var legsImg = new Image();
+  legsImg.src = 'assets/individual/20-couple-hires.png';
+  var legsReady = false;
+  legsImg.onload = function() { legsReady = true; };
+
+  vid.addEventListener('loadedmetadata', function() {
+    canvas.width = vid.videoWidth;
+    canvas.height = vid.videoHeight;
+  });
+
+  vid.addEventListener('play', function() {
+    if (!running) { running = true; drawFrame(); }
+  });
+
+  function drawFrame() {
+    if (vid.paused || vid.ended) { running = false; return; }
+    var cw = canvas.width, ch = canvas.height;
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Step 1: Draw static image legs (bottom 35%) first as base
+    if (legsReady) {
+      // Map static image to match video canvas using object-fit:contain logic
+      var imgW = legsImg.naturalWidth, imgH = legsImg.naturalHeight;
+      var scale = Math.min(cw / imgW, ch / imgH);
+      var dw = imgW * scale, dh = imgH * scale;
+      var dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+      // Only draw bottom 40% of the mapped image (legs area)
+      var clipY = dy + dh * 0.6;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, clipY, cw, ch - clipY);
+      ctx.clip();
+      ctx.drawImage(legsImg, dx, dy, dw, dh);
+      ctx.restore();
+    }
+
+    // Step 2: Draw chromakeyed video on top
+    // Use offscreen canvas for video processing
+    var offscreen = document.createElement('canvas');
+    offscreen.width = cw;
+    offscreen.height = ch;
+    var octx = offscreen.getContext('2d', { willReadFrequently: true });
+    octx.drawImage(vid, 0, 0, cw, ch);
+    var frame = octx.getImageData(0, 0, cw, ch);
+    var d = frame.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var r = d[i], g = d[i+1], b = d[i+2];
+      var max = Math.max(r, g, b);
+      var min = Math.min(r, g, b);
+      var sat = max > 0 ? (max - min) / max : 0;
+      var brightness = (r + g + b) / 3;
+      if (brightness > 200 && sat < 0.12) {
+        d[i+3] = 0;
+      } else if (brightness > 170 && sat < 0.15) {
+        var alpha = Math.round(255 * (1 - (brightness - 170) / 50));
+        d[i+3] = Math.min(d[i+3], Math.max(0, alpha));
+      }
+    }
+    octx.putImageData(frame, 0, 0);
+    ctx.drawImage(offscreen, 0, 0);
+
+    requestAnimationFrame(drawFrame);
+  }
+})();
+</script>
+</body>
+</html>
