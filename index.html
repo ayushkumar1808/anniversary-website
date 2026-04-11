@@ -242,8 +242,8 @@
     /* --- z32: COUPLE — TOPMOST LAYER --- */
     /* left: 93.46/397=23.54%, top: 167.49/559=29.96%, w: 210.40/397=52.99%, h: 377.12/559=67.46% */
     .couple { left:23.54%; top:29.96%; width:52.99%; height:67.46%; z-index:19; position:relative; }
-    .couple-img { display:none !important; }
-    .couple-vid { display:none !important; }
+    .couple-img { display:none; }
+    .couple-vid { display:none; }
     .couple-canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
 
     /* --- z35: Text overlay --- */
@@ -286,9 +286,9 @@
     /* ========== HERO BOTTOM (Names Section) ========== */
     .hero-bottom {
       background: var(--maroon-deep);
-      padding: 20px 12px 30px;
+      padding: 18px 12px 20px;
       text-align: center;
-      flex: 1;
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -876,6 +876,7 @@ setMusicIcon(false);
   var canvas = document.getElementById('coupleCanvas');
   var ctx = canvas.getContext('2d', { willReadFrequently: true });
   var running = false;
+  var videoStarted = false;
 
   // Load static image for legs compositing
   var legsImg = new Image();
@@ -883,28 +884,82 @@ setMusicIcon(false);
   var legsReady = false;
   legsImg.onload = function() { legsReady = true; };
 
+  // Reusable offscreen canvas (avoid creating one per frame)
+  var offscreen = document.createElement('canvas');
+  var octx = offscreen.getContext('2d', { willReadFrequently: true });
+
+  // Show static image as fallback until video plays
+  var coupleImg = document.querySelector('.couple-img');
+
   vid.addEventListener('loadedmetadata', function() {
     canvas.width = vid.videoWidth;
     canvas.height = vid.videoHeight;
+    offscreen.width = vid.videoWidth;
+    offscreen.height = vid.videoHeight;
   });
 
   vid.addEventListener('play', function() {
     if (!running) { running = true; drawFrame(); }
+    if (!videoStarted) {
+      videoStarted = true;
+      // Hide static fallback, show canvas
+      if (coupleImg) coupleImg.style.display = 'none';
+      canvas.style.display = 'block';
+    }
   });
+
+  // Force-start video: mobile browsers block autoplay until user interacts
+  function tryPlay() {
+    if (videoStarted) return;
+    var p = vid.play();
+    if (p && p.catch) p.catch(function() {});
+  }
+
+  // Try autoplay immediately
+  tryPlay();
+
+  // Also try on first user interaction (touch, scroll, click)
+  var interactionEvents = ['touchstart', 'touchend', 'click', 'scroll'];
+  function onInteraction() {
+    tryPlay();
+    if (videoStarted) {
+      interactionEvents.forEach(function(e) {
+        document.removeEventListener(e, onInteraction, { capture: true });
+      });
+    }
+  }
+  interactionEvents.forEach(function(e) {
+    document.addEventListener(e, onInteraction, { capture: true, passive: true });
+  });
+  // Also listen on snap container scroll
+  var snapEl = document.getElementById('snapContainer');
+  if (snapEl) snapEl.addEventListener('scroll', onInteraction, { passive: true });
+
+  // If video still hasn't played after 2s, show static image as fallback
+  setTimeout(function() {
+    if (!videoStarted && coupleImg) {
+      coupleImg.style.display = 'block';
+      coupleImg.style.position = 'absolute';
+      coupleImg.style.top = '0';
+      coupleImg.style.left = '0';
+      coupleImg.style.width = '100%';
+      coupleImg.style.height = '100%';
+      coupleImg.style.objectFit = 'contain';
+    }
+  }, 2000);
 
   function drawFrame() {
     if (vid.paused || vid.ended) { running = false; return; }
     var cw = canvas.width, ch = canvas.height;
+    if (!cw || !ch) { requestAnimationFrame(drawFrame); return; }
     ctx.clearRect(0, 0, cw, ch);
 
     // Step 1: Draw static image legs (bottom 35%) first as base
     if (legsReady) {
-      // Map static image to match video canvas using object-fit:contain logic
       var imgW = legsImg.naturalWidth, imgH = legsImg.naturalHeight;
       var scale = Math.min(cw / imgW, ch / imgH);
       var dw = imgW * scale, dh = imgH * scale;
       var dx = (cw - dw) / 2, dy = (ch - dh) / 2;
-      // Only draw bottom 40% of the mapped image (legs area)
       var clipY = dy + dh * 0.6;
       ctx.save();
       ctx.beginPath();
@@ -915,11 +970,6 @@ setMusicIcon(false);
     }
 
     // Step 2: Draw chromakeyed video on top
-    // Use offscreen canvas for video processing
-    var offscreen = document.createElement('canvas');
-    offscreen.width = cw;
-    offscreen.height = ch;
-    var octx = offscreen.getContext('2d', { willReadFrequently: true });
     octx.drawImage(vid, 0, 0, cw, ch);
     var frame = octx.getImageData(0, 0, cw, ch);
     var d = frame.data;
