@@ -26,14 +26,17 @@
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
-    html { height: 100%; }
+    html { height: 100%; overflow: hidden; }
     body {
       font-family: 'Della Robbia', Georgia, serif;
       background: var(--maroon-deep);
       color: var(--dark);
-      overflow-x: hidden;
+      overflow: hidden;
       -webkit-font-smoothing: antialiased;
       height: 100%;
+    }
+    .snap-container {
+      height: 100%; height: 100dvh;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       -webkit-overflow-scrolling: touch;
@@ -510,6 +513,7 @@
   </a>
 </div>
 
+<div class="snap-container" id="snapContainer">
 <!-- ===== HERO — Exact Canva page 2 layout ===== -->
 <div class="hero-wrap">
 <section class="hero" id="hero">
@@ -683,9 +687,12 @@
 </section>
 
 <footer><p>With Love &mdash; The Family</p><p class="credit"><a href="https://www.linkedin.com/in/ayushkumar1808/" target="_blank" rel="noopener">Designed by Ayush Kumar</a></p></footer>
+</div><!-- /.snap-container -->
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
+var snapEl = document.getElementById('snapContainer');
+ScrollTrigger.defaults({ scroller: snapEl });
 var loaderTl = gsap.timeline();
 loaderTl
   .to('#loader .ganesha', { opacity:1, duration:1, ease:'power2.out' }, 0.3)
