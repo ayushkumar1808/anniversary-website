@@ -241,8 +241,9 @@
 
     /* --- z32: COUPLE — TOPMOST LAYER --- */
     /* left: 93.46/397=23.54%, top: 167.49/559=29.96%, w: 210.40/397=52.99%, h: 377.12/559=67.46% */
-    .couple { left:23.54%; top:29.96%; width:52.99%; height:67.46%; z-index:19; position:relative; overflow:hidden; }
-    .couple-webp { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; }
+    .couple { left:23.54%; top:29.96%; width:52.99%; height:67.46%; z-index:19; position:relative; }
+    .couple-legs { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:0; }
+    .couple-webp { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:1; }
 
     /* --- z35: Text overlay --- */
     .hero-text {
@@ -596,6 +597,7 @@
 
   <!-- z32: COUPLE (topmost) -->
   <div class="ha couple">
+      <img src="assets/individual/20-couple-hires.png" alt="" class="couple-legs">
       <img src="assets/individual/couple-anim.webp" alt="Sandhya & Prem Chand" class="couple-webp">
     </div>
 
