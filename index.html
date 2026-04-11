@@ -87,11 +87,15 @@
       position: relative;
       width: 100%;
       max-width: 500px;
-      aspect-ratio: 397 / 559;
-      max-height: calc(100dvh - 220px);
+      flex: 1 1 0;
+      min-height: 0;
       overflow: hidden;
       background: var(--gold);
-      flex-shrink: 1;
+    }
+    .hero-inner {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      aspect-ratio: 397 / 559;
     }
 
     /* z1: Floral motif pattern — 3×3 tiled, each tile ~182×220pt = 45.8% × 39.4% */
@@ -509,6 +513,7 @@
 <!-- ===== HERO — Exact Canva page 2 layout ===== -->
 <div class="hero-wrap">
 <section class="hero" id="hero">
+<div class="hero-inner">
   <!-- z1: Motif pattern background -->
   <div class="hero-bg-motif"></div>
 
@@ -604,6 +609,7 @@
   <div class="scroll-arrow" id="scrollArrow">
     <span class="chevron"></span>
   </div>
+</div>
 </section>
 
 <!-- HERO BOTTOM — Names & Subtitle -->
