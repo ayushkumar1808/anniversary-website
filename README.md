@@ -50,4 +50,4 @@ npx serve .
 
 ## Credits
 
-Designed by Ayush Kumar
+Designed by [Ayush Kumar](https://www.linkedin.com/in/ayushkumar1808/)
