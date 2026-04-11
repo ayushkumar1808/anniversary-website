@@ -891,22 +891,36 @@ setMusicIcon(false);
   // Show static image as fallback until video plays
   var coupleImg = document.querySelector('.couple-img');
 
-  vid.addEventListener('loadedmetadata', function() {
-    canvas.width = vid.videoWidth;
-    canvas.height = vid.videoHeight;
-    offscreen.width = vid.videoWidth;
-    offscreen.height = vid.videoHeight;
-  });
+  function initCanvasSize() {
+    if (vid.videoWidth && vid.videoHeight) {
+      canvas.width = vid.videoWidth;
+      canvas.height = vid.videoHeight;
+      offscreen.width = vid.videoWidth;
+      offscreen.height = vid.videoHeight;
+    }
+  }
 
-  vid.addEventListener('play', function() {
+  // If metadata already loaded (autoplay can fire before script runs), init now
+  if (vid.readyState >= 1) {
+    initCanvasSize();
+  }
+  vid.addEventListener('loadedmetadata', initCanvasSize);
+
+  function startDrawing() {
+    initCanvasSize();
     if (!running) { running = true; drawFrame(); }
     if (!videoStarted) {
       videoStarted = true;
-      // Hide static fallback, show canvas
       if (coupleImg) coupleImg.style.display = 'none';
       canvas.style.display = 'block';
     }
-  });
+  }
+
+  vid.addEventListener('play', startDrawing);
+  // If video is already playing (autoplay succeeded before script ran)
+  if (!vid.paused) {
+    startDrawing();
+  }
 
   // Force-start video: mobile browsers block autoplay until user interacts
   function tryPlay() {
@@ -938,6 +952,7 @@ setMusicIcon(false);
   // If video still hasn't played after 2s, show static image as fallback
   setTimeout(function() {
     if (!videoStarted && coupleImg) {
+      canvas.style.display = 'none';
       coupleImg.style.display = 'block';
       coupleImg.style.position = 'absolute';
       coupleImg.style.top = '0';
