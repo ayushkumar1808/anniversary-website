@@ -26,7 +26,7 @@
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; }
+    html { height: 100%; }
     body {
       font-family: 'Della Robbia', Georgia, serif;
       background: var(--maroon-deep);
@@ -34,6 +34,9 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       height: 100%;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
     }
     .snap-section { scroll-snap-align: start; min-height: 100vh; min-height: 100dvh; }
 
@@ -85,9 +88,10 @@
       width: 100%;
       max-width: 500px;
       aspect-ratio: 397 / 559;
-      max-height: 65dvh;
+      max-height: calc(100dvh - 220px);
       overflow: hidden;
       background: var(--gold);
+      flex-shrink: 1;
     }
 
     /* z1: Floral motif pattern — 3×3 tiled, each tile ~182×220pt = 45.8% × 39.4% */
