@@ -270,9 +270,10 @@
 
     /* Scroll arrow — triple gold cascade */
     .scroll-arrow {
-      position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
-      text-align:center; z-index:65; opacity:0;
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      text-align:center; z-index:200; opacity:0;
       display:flex; flex-direction:column; align-items:center; gap:2px;
+      pointer-events:none;
     }
     .scroll-arrow .scroll-label {
       display:block; font-size:0.5rem; letter-spacing:4px; text-transform:uppercase;
@@ -734,6 +735,11 @@ setTimeout(function() {
 
 function runAnimations() {
   gsap.to('#scrollArrow', { opacity:1, duration:0.6, delay:0.5 });
+  ScrollTrigger.create({
+    trigger: '#details', start: 'top bottom',
+    onEnter: function() { gsap.to('#scrollArrow', { opacity:0, duration:0.3 }); },
+    onLeaveBack: function() { gsap.to('#scrollArrow', { opacity:1, duration:0.3 }); }
+  });
   gsap.fromTo('.hero-bottom-names', {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, delay:0.6});
 
   // Progress dots
