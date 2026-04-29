@@ -270,8 +270,8 @@
 
     /* Scroll arrow — triple gold cascade */
     .scroll-arrow {
-      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-      text-align:center; z-index:200; opacity:0;
+      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+      text-align:center; z-index:65; opacity:0;
       display:flex; flex-direction:column; align-items:center; gap:2px;
       pointer-events:none;
     }
@@ -307,7 +307,7 @@
     /* ========== HERO BOTTOM (Names Section) ========== */
     .hero-bottom {
       background: var(--maroon-deep);
-      padding: 18px 12px 20px;
+      padding: 18px 12px 44px;
       text-align: center;
       flex: 0 0 auto;
       display: flex;
@@ -626,18 +626,18 @@
     <div class="tlove">Love</div>
   </div>
 
-  <div class="scroll-arrow" id="scrollArrow">
-    <span class="scroll-label">scroll</span>
-    <span class="chevron"></span>
-    <span class="chevron"></span>
-    <span class="chevron"></span>
-  </div>
 </div>
 </section>
 
 <!-- HERO BOTTOM — Names & Subtitle -->
 <div class="hero-bottom">
   <div class="hero-bottom-names"><span>Sandhya</span><span class="amp">&amp;</span><span>Prem Chand</span></div>
+  <div class="scroll-arrow" id="scrollArrow">
+    <span class="scroll-label">scroll</span>
+    <span class="chevron"></span>
+    <span class="chevron"></span>
+    <span class="chevron"></span>
+  </div>
 </div>
 </div>
 
@@ -735,11 +735,6 @@ setTimeout(function() {
 
 function runAnimations() {
   gsap.to('#scrollArrow', { opacity:1, duration:0.6, delay:0.5 });
-  ScrollTrigger.create({
-    trigger: '#details', start: 'top bottom',
-    onEnter: function() { gsap.to('#scrollArrow', { opacity:0, duration:0.3 }); },
-    onLeaveBack: function() { gsap.to('#scrollArrow', { opacity:1, duration:0.3 }); }
-  });
   gsap.fromTo('.hero-bottom-names', {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, delay:0.6});
 
   // Progress dots
