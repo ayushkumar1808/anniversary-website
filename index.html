@@ -43,7 +43,7 @@
       scrollbar-width: none;
     }
     .snap-container::-webkit-scrollbar { display: none; }
-    .snap-section { scroll-snap-align: start; min-height: 100vh; min-height: 100dvh; }
+    .snap-section { scroll-snap-align: start; scroll-snap-stop: always; min-height: 100vh; min-height: 100dvh; }
 
     /* ========== LOADER ========== */
     #loader {
@@ -86,6 +86,7 @@
       background: var(--maroon-deep);
       display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
       overflow: hidden;
     }
     .hero {
@@ -355,7 +356,7 @@
     .rsvp-float svg { width:18px; height:18px; fill:#25D366; }
 
     /* ========== DETAILS ========== */
-    .details { background:var(--maroon-deep); padding:60px 24px 70px; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; overflow:hidden; }
+    .details { background:var(--maroon-deep); padding:60px 24px 70px; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; scroll-snap-stop:always; overflow:hidden; }
     .details::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
     .details h2 { font-family:'Prata',serif; font-size:1.6rem; color:var(--cream); text-align:center; margin-bottom:40px; opacity:0; }
     .detail-card { width:100%; max-width:340px; margin:0 auto 28px; display:flex; align-items:center; gap:16px; opacity:0; transform:translateY(25px); }
@@ -366,7 +367,7 @@
     .detail-info .val { font-family:'Prata',serif; font-size:1.1rem; color:var(--cream); line-height:1.4; margin-top:2px; }
 
     /* ========== MAP ========== */
-    .map-section { background:var(--gold); padding:60px 24px; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; overflow:hidden; }
+    .map-section { background:var(--gold); padding:60px 24px; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; justify-content:center; scroll-snap-align:start; scroll-snap-stop:always; overflow:hidden; }
     .map-section h2 { font-family:'Prata',serif; font-size:1.5rem; color:var(--maroon-deep); text-align:center; opacity:0; }
     .map-sub { font-size:0.9rem; color:var(--dark); text-align:center; margin:6px 0 24px; opacity:0; }
     .map-wrap { max-width:400px; margin:0 auto; border-radius:10px; overflow:hidden; border:2px solid var(--maroon); box-shadow:0 10px 40px rgba(74,16,24,0.2); opacity:0; transform:translateY(30px); }
@@ -375,7 +376,7 @@
     .map-link:hover { text-decoration:underline; }
 
     /* ========== RSVP ========== */
-    .rsvp { background:var(--maroon-deep); padding:70px 24px 80px; text-align:center; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; scroll-snap-align:start; overflow:hidden; }
+    .rsvp { background:var(--maroon-deep); padding:70px 24px 80px; text-align:center; position:relative; height:100vh; height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; scroll-snap-align:start; scroll-snap-stop:always; overflow:hidden; }
     .rsvp::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
     .rsvp h2 { font-family:'Prata',serif; font-size:1.6rem; color:var(--cream); opacity:0; }
     .rsvp p { font-size:1rem; color:var(--gold-light); margin:12px auto 36px; max-width:300px; opacity:0; }
