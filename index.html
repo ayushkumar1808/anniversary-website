@@ -266,21 +266,40 @@
       color:var(--dark); line-height:1;
     }
 
-    /* Scroll arrow */
+    /* Scroll arrow — triple gold cascade */
     .scroll-arrow {
-      position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+      position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
       text-align:center; z-index:55; opacity:0;
+      display:flex; flex-direction:column; align-items:center; gap:2px;
     }
-    .scroll-arrow span { display:block; font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--dark); }
+    .scroll-arrow .scroll-label {
+      display:block; font-size:0.5rem; letter-spacing:4px; text-transform:uppercase;
+      color:var(--gold); opacity:0.8; margin-bottom:5px;
+    }
     .scroll-arrow .chevron {
-      display:block; width:14px; height:14px; margin:5px auto 0;
-      border-right:1.5px solid var(--dark); border-bottom:1.5px solid var(--dark);
-      transform:rotate(45deg); animation:pulse-arrow 2s infinite;
+      display:block; width:11px; height:11px;
+      border-right:1.5px solid var(--gold); border-bottom:1.5px solid var(--gold);
+      transform:rotate(45deg); animation:cascade-chv 1.8s infinite;
     }
-    @keyframes pulse-arrow {
-      0%,100% { transform:rotate(45deg) translateY(0); opacity:1; }
-      50% { transform:rotate(45deg) translateY(5px); opacity:0.4; }
+    .scroll-arrow .chevron:nth-child(2) { animation-delay:0.2s; }
+    .scroll-arrow .chevron:nth-child(3) { animation-delay:0.4s; }
+    @keyframes cascade-chv {
+      0%,60%,100% { opacity:0.15; }
+      30% { opacity:1; }
     }
+
+    /* Side progress dots */
+    .progress-dots {
+      position:fixed; right:12px; top:50%; transform:translateY(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      z-index:500; opacity:0; transition:opacity 0.5s;
+    }
+    .progress-dots.visible { opacity:1; }
+    .pd-dot {
+      width:5px; height:5px; border-radius:50%;
+      background:rgba(212,175,54,0.25); transition:all 0.4s ease;
+    }
+    .pd-dot.active { background:var(--gold); height:18px; border-radius:2.5px; }
 
     /* ========== HERO BOTTOM (Names Section) ========== */
     .hero-bottom {
@@ -609,6 +628,9 @@
   </div>
 
   <div class="scroll-arrow" id="scrollArrow">
+    <span class="scroll-label">scroll</span>
+    <span class="chevron"></span>
+    <span class="chevron"></span>
     <span class="chevron"></span>
   </div>
 </div>
@@ -617,9 +639,10 @@
 <!-- HERO BOTTOM — Names & Subtitle -->
 <div class="hero-bottom">
   <div class="hero-bottom-names"><span>Sandhya</span><span class="amp">&amp;</span><span>Prem Chand</span></div>
-  <div class="hero-bottom-sub">Silver Jubilee Anniversary<br>Dinner Celebration</div>
-
   <div class="scroll-arrow scroll-arrow-bottom" id="scrollArrow2">
+    <span class="scroll-label">scroll</span>
+    <span class="chevron"></span>
+    <span class="chevron"></span>
     <span class="chevron"></span>
   </div>
 </div>
@@ -687,6 +710,13 @@
 <footer><p>With Love &mdash; The Family</p><p class="credit"><a href="https://www.linkedin.com/in/ayushkumar1808/" target="_blank" rel="noopener">Designed by Ayush Kumar</a></p></footer>
 </div><!-- /.snap-container -->
 
+<div class="progress-dots" id="progressDots">
+  <div class="pd-dot active"></div>
+  <div class="pd-dot"></div>
+  <div class="pd-dot"></div>
+  <div class="pd-dot"></div>
+</div>
+
 <script>
 gsap.registerPlugin(ScrollTrigger);
 var snapEl = document.getElementById('snapContainer');
@@ -711,9 +741,26 @@ setTimeout(function() {
 }, 4000);
 
 function runAnimations() {
-  gsap.to('#scrollArrow', { opacity:0.7, duration:0.6, delay:0.5 });
+  gsap.to('#scrollArrow', { opacity:1, duration:0.6, delay:0.5 });
+  gsap.to('#scrollArrow2', { opacity:1, duration:0.6, delay:0.8 });
   gsap.fromTo('.hero-bottom-names', {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, delay:0.6});
-  gsap.fromTo('.hero-bottom-sub', {opacity:0, y:20}, {opacity:0.85, y:0, duration:0.7, delay:0.9});
+
+  // Progress dots
+  var dotsEl = document.getElementById('progressDots');
+  var allDots = dotsEl.querySelectorAll('.pd-dot');
+  gsap.to('#progressDots', { opacity:1, duration:0.5, delay:1 });
+  dotsEl.classList.add('visible');
+  var sectionEls = ['.hero-wrap', '#details', '#mapSection', '#rsvpSection'];
+  function setDot(i) {
+    allDots.forEach(function(d, idx) { d.classList.toggle('active', idx === i); });
+  }
+  sectionEls.forEach(function(sel, i) {
+    ScrollTrigger.create({
+      trigger: sel, start: 'top 50%', end: 'bottom 50%',
+      onEnter: function() { setDot(i); },
+      onEnterBack: function() { setDot(i); }
+    });
+  });
   ScrollTrigger.create({
     trigger:'#details', start:'top 80%',
     onEnter: function(){ gsap.to('#rsvpFloat',{opacity:1,pointerEvents:'auto',duration:0.4}); },
