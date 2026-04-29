@@ -339,12 +339,8 @@
       line-height: 1.8;
       opacity: 0.85;
     }
-    .scroll-arrow-bottom {
-      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-      opacity: 0.6;
-    }
 
-    /* ========== RSVP FLOAT ========== */
+/* ========== RSVP FLOAT ========== */
     .rsvp-float { position:fixed; bottom:20px; right:20px; z-index:1000; opacity:0; pointer-events:none; }
     .rsvp-float a {
       display:flex; align-items:center; gap:8px; background:var(--maroon); color:var(--cream);
@@ -639,12 +635,6 @@
 <!-- HERO BOTTOM — Names & Subtitle -->
 <div class="hero-bottom">
   <div class="hero-bottom-names"><span>Sandhya</span><span class="amp">&amp;</span><span>Prem Chand</span></div>
-  <div class="scroll-arrow scroll-arrow-bottom" id="scrollArrow2">
-    <span class="scroll-label">scroll</span>
-    <span class="chevron"></span>
-    <span class="chevron"></span>
-    <span class="chevron"></span>
-  </div>
 </div>
 </div>
 
@@ -742,7 +732,6 @@ setTimeout(function() {
 
 function runAnimations() {
   gsap.to('#scrollArrow', { opacity:1, duration:0.6, delay:0.5 });
-  gsap.to('#scrollArrow2', { opacity:1, duration:0.6, delay:0.8 });
   gsap.fromTo('.hero-bottom-names', {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, delay:0.6});
 
   // Progress dots
